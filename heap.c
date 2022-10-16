@@ -50,7 +50,45 @@ void heap_push(Heap* pq, void* data, int priority){
 
 
 void heap_pop(Heap* pq){
-
+   void * data = pq->heapArray[pq->size-1].data;
+   int pri = pq->heapArray[pq->size-1].priority;
+   pq->heapArray[pq->size].priority = pq->heapArray[0].priority;
+   pq->heapArray[0].priority = pri;
+   pq->heapArray[pq->size-1].priority = 0;
+   pq->heapArray[pq->size].data = pq->heapArray[0].data;
+   pq->heapArray[0].data = data;
+   pq->heapArray[pq->size-1].data = NULL;
+   pq->size--;
+   int hijoIzq, hijoDer;
+   for (int i = 0; i < pq->size; i++)
+   {
+      hijoIzq = (2*i) + 1;
+      hijoDer = (2*i) + 2;
+      if(hijoIzq > pq->size) pq->heapArray[hijoIzq].priority = 0;
+      if(hijoDer > pq->size) pq->heapArray[hijoDer].priority = 0;
+      if(pq->heapArray[hijoIzq].priority < pq->heapArray[hijoDer].priority)
+      {
+         if(pq->heapArray[i].priority < pq->heapArray[hijoDer].priority)
+         {
+            pq->heapArray[i].data = pq->heapArray[hijoDer].data;
+            pq->heapArray[hijoDer].data = data;
+            pq->heapArray[i].priority = pq->heapArray[hijoDer].priority;
+            pq->heapArray[hijoDer].priority = pri;
+            i = hijoDer;
+         } else break;
+      }
+      else if (pq->heapArray[hijoDer].priority < pq->heapArray[hijoIzq].priority)
+      {
+         if(pq->heapArray[i].priority < pq->heapArray[hijoIzq].priority)
+         {
+            pq->heapArray[i].data = pq->heapArray[hijoIzq].data;
+            pq->heapArray[hijoIzq].data = data;
+            pq->heapArray[i].priority = pq->heapArray[hijoIzq].priority;
+            pq->heapArray[hijoIzq].priority = pri;
+            i = hijoDer;
+         } else break;
+      }
+   }
 }
 
 Heap* createHeap(){
